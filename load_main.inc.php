@@ -38,10 +38,30 @@
 		if (file_exists($path) && @include($path)) return;
 	}
 
-// 2. try to find main.inc.php in the USUAL LOCATIONS
+// 2. Try into web root known defined into CONTEXT_DOCUMENT_ROOT (not always defined)
 
 	$path='';
 	
+	if (!empty($_SERVER["CONTEXT_DOCUMENT_ROOT"]) && file_exists($_SERVER["CONTEXT_DOCUMENT_ROOT"]."/main.inc.php")){
+		if (@include($_SERVER["CONTEXT_DOCUMENT_ROOT"]."/main.inc.php")) $path = $_SERVER["CONTEXT_DOCUMENT_ROOT"]."/main.inc.php";
+	}
+
+// 3. Try into web root detected using web root calculated from SCRIPT_FILENAME
+	if ($path==''){
+		$tmp = empty($_SERVER['SCRIPT_FILENAME']) ? '' : $_SERVER['SCRIPT_FILENAME']; $tmp2 = realpath(__FILE__); $i = strlen($tmp) - 1; $j = strlen($tmp2) - 1;
+		while ($i > 0 && $j > 0 && isset($tmp[$i]) && isset($tmp2[$j]) && $tmp[$i] == $tmp2[$j]) {
+			$i--; $j--;
+		}
+		if ($path=='' && $i > 0 && file_exists(substr($tmp, 0, ($i + 1))."/main.inc.php")) {
+			if (@include(substr($tmp, 0, ($i + 1))."/main.inc.php")) $path = substr($tmp, 0, ($i + 1))."/main.inc.php";
+		}
+		if ($path=='' && $i > 0 && file_exists(dirname(substr($tmp, 0, ($i + 1)))."/main.inc.php")) {
+			if (@include(dirname(substr($tmp, 0, ($i + 1)))."/main.inc.php")) $path = dirname(substr($tmp, 0, ($i + 1)))."/main.inc.php";
+		}
+	}
+
+// 4. try to find main.inc.php in the USUAL LOCATIONS
+
 	if ($path=='' && file_exists("../main.inc.php")){
 		if (@include("../main.inc.php")) $path = "../main.inc.php";
 	}
@@ -55,14 +75,14 @@
 		if (@include("../../../../main.inc.php")) $path = "../../../../main.inc.php";
 	}
 
-// 3. try to find main.inc.php in the LOCATIONS used by some providers
+// 5. try to find main.inc.php in the LOCATIONS used by some providers
 
 	// Bitnami over AWS
 	if ($path=='' && file_exists("/opt/bitnami/dolibarr/htdocs/main.inc.php")){
 		if (@include("/opt/bitnami/dolibarr/htdocs/main.inc.php")) $path = "/opt/bitnami/dolibarr/htdocs/main.inc.php";
 	}
 
-// 4. last try, with the PATH passed from the <FORM> in this script to let the user indicate the path
+// 6. last try, with the PATH passed from the <FORM> in this script to let the user indicate the path
 
 	if ($path=='' && !empty($_POST['main_inc_php_path']) && file_exists($_POST['main_inc_php_path'])){
 		
