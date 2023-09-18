@@ -18,6 +18,8 @@
 - The default include system recommended by Dolibarr returns the message `"Include of main fails"` on a blank web page. However, this doesn't help the user fix the problem.
 - Therefore, I've replaced this static message with a web form that requests the user to provide the absolute path of the file `main.inc.php`. This allows the user to easily fix it from their browser. In the successful case that the path is correct and `main.inc.php` is loaded, the path is stored in the "cache physical file" for subsequent calls to this module.
 
+![dolibarr_screenshot_when_not_found_main_inc_php.png](dolibarr_screenshot_when_not_found_main_inc_php.png)
+
 ## How to use it
 
 1. Place the file `load_main.inc.php` in the root of your module.
