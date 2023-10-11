@@ -23,18 +23,17 @@
  * 
  * 	2. at the top of any PHP file of your module needing to load main.inc.php put his:
  * 
- * 		include_once('load_main.inc.php');
+ * 		include_once('main_module.inc.php');
  * 
  */
 
 // ACTIVATE the ERROR reporting (use only to debug)
-
 //	ini_set('display_errors',1);ini_set('display_startup_errors',1);ini_set('error_reporting', E_ALL);
 
 // 1. try to get the location of main.inc.php from PHYSICAL TEXT FILE
 
-	if (file_exists("../load_main_inc_php")){
-		$path = @file_get_contents("../load_main_inc_php");
+	if (file_exists("../main_module_inc_php")){
+		$path = @file_get_contents("../main_module_inc_php");
 		if (file_exists($path) && @include($path)) return;
 	}
 
@@ -87,7 +86,6 @@
 	if ($path=='' && !empty($_POST['main_inc_php_path']) && file_exists($_POST['main_inc_php_path'])){
 		
 		define('NOCSRFCHECK',1); // this disable for this unique call the check of the CSRF security token!
-		
 		if (@include($_POST['main_inc_php_path'])) $path = $_POST['main_inc_php_path'];
 	}
 
@@ -97,7 +95,7 @@
 	if ($path!=''){
 	
 		// if the load was not successful then we empty the path from this file
-		@file_put_contents("../load_main_inc_php",$path);
+		@file_put_contents("../main_module_inc_php",$path);
 		
 		return;
 	}
