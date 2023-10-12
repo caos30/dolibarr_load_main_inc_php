@@ -64,7 +64,7 @@ if ($path == '' && !empty($_SERVER['SCRIPT_FILENAME'])) {
 	}
 }
 // 4. try to find main.inc.php in the parent directories
-if ($path = '') {
+if ($path == '') {
 	$dolipath = "..";
 	while (!file_exists($dolipath."/main.inc.php")) {
 		$abspath = $dolipath;
@@ -99,9 +99,9 @@ if ($path = '') {
 
 // if we accomplished to load main.inc.php file then save it and return
 
-	if ($path != ''){
+	if ($path != '') {
 		// if the load was not successful then we empty the path from this file
-		@file_put_contents("../main_module_inc_php",$path);
+		@file_put_contents("../main_module_inc_php", $path);
 		return;
 	}
 
