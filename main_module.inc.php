@@ -1,5 +1,5 @@
 <?php
-/* 
+/*
  * Licensed under the GNU GPL v3 or higher (See file gpl-3.0.html)
  *
  * This program is free software; you can redistribute it and/or modify
@@ -50,7 +50,7 @@
 	}
 
 // 3. try to find main.inc.php in all parent folders calculated from SCRIPT_FILENAME
-if (!$path == '' && !empty($_SERVER['SCRIPT_FILENAME'])) {
+if ($path == '' && !empty($_SERVER['SCRIPT_FILENAME'])) {
 	$dolipath = dirname($_SERVER['SCRIPT_FILENAME']);
 	while (!file_exists($dolipath."/main.inc.php")) {
 		$abspath = $dolipath;
