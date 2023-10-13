@@ -9,7 +9,7 @@
 
 ## Caching on a physical file 
 
-- Additionally, I've replaced the typical collection of `@include("../main.inc.php")` with a longer list of locations. Furthermore, to avoid repeating this "search" each time we call the module, I use a "cache" physical file at `/custom/main_module.inc.php` to save the location of `main.inc.php`.
+- Additionally, I've replaced the typical collection of `@include("../main.inc.php")` with a longer list of locations. Furthermore, to avoid repeating this "search" each time we call the module, I use a "cache" physical file at `/custom/main_module_inc_php` to save the location of `main.inc.php`.
 - So, in this way, on each load, we FIRST TRY the path stored in this cache file. If it doesn't work, then we perform the initial search again.
 - This system is significantly faster than the default method used and recommended by Dolibarr for third-party modules.
 
