@@ -23,7 +23,7 @@
  *
  * 	2. at the top of any PHP file of your module needing to load main.inc.php put his:
  *
- * 		include_once('main_module.inc.php');
+ * 		include_once 'main_module.inc.php';
  *
  */
 
@@ -34,19 +34,12 @@
 
 	$path = '';
 
-	if (!empty($_SERVER['SCRIPT_FILENAME']) && file_exists(dirname(dirname($_SERVER['SCRIPT_FILENAME']))."/main_module_inc_php")) {
-		$path = @file_get_contents(dirname(dirname($_SERVER['SCRIPT_FILENAME']))."/main_module_inc_php");
+	if (file_exists(__DIR__."/main_module_inc_php")) {
+		$path = @file_get_contents(__DIR__."/main_module_inc_php");
 		if (file_exists($path) && @include $path) {
 			return;
 		}
 	}
-	if ($path == '' && file_exists("../main_module_inc_php")) {
-		$path = @file_get_contents("../main_module_inc_php");
-		if (file_exists($path) && @include $path) {
-			return;
-		}
-	}
-
 // 2. Try into web root known defined into CONTEXT_DOCUMENT_ROOT (not always defined)
 
 	if (!empty($_SERVER["CONTEXT_DOCUMENT_ROOT"]) && file_exists($_SERVER["CONTEXT_DOCUMENT_ROOT"]."/main.inc.php")){
@@ -119,12 +112,8 @@
 
 	if ($path != '') {
 		// if the load was not successful then we empty the path from this file
-        if (!empty($_SERVER['SCRIPT_FILENAME']) && $saved = @file_put_contents(dirname(dirname($_SERVER['SCRIPT_FILENAME']))."/main_module_inc_php", $path)) {
-            return;
-        } else {
-            @file_put_contents("../main_module_inc_php", $path);
-		    return;
-        }
+        @file_put_contents(__DIR__."/main_module_inc_php", $path);
+		return;
 	}
 
 // we did not accomplished to load the main.inc.php
