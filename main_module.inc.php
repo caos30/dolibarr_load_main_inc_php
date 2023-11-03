@@ -119,7 +119,7 @@
 
 	if ($path != '') {
 		// if the load was not successful then we empty the path from this file
-        if ($saved = @file_put_contents(dirname(dirname($_SERVER['SCRIPT_FILENAME']))."/main_module_inc_php", $path)) {
+        if (!empty($_SERVER['SCRIPT_FILENAME']) && $saved = @file_put_contents(dirname(dirname($_SERVER['SCRIPT_FILENAME']))."/main_module_inc_php", $path)) {
             return;
         } else {
             @file_put_contents("../main_module_inc_php", $path);
