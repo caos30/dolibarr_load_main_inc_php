@@ -97,16 +97,16 @@
 // 6. last try, with the PATH passed from the <FORM> in this script to let the user indicate the path
 
 	if ($path == '' && !empty($_POST['main_inc_php_path'])){
-				
+
 		// check that the proposed file is really main.inc.php and not other malicious file
 		if (substr($_POST['main_inc_php_path'], -13) == '/main.inc.php' && file_exists($_POST['main_inc_php_path'])) {
-					
+
 			// prevent a hacker from trying to upload a file submitted by him
 			// we check existence of usual Dolibarr directories of core modules (a few it's enough)
 			$dir = dirname($_POST['main_inc_php_path']); // ex: ../..
 			$sep = DIRECTORY_SEPARATOR;
 			if (is_dir($dir.$sep.'fourn') && is_dir($dir.$sep.'fourn'.$sep.'facture') && is_dir($dir.$sep.'fourn'.$sep.'facture'.$sep.'tpl')){
-			
+
 				define('NOCSRFCHECK',1); // this disable for this unique call the check of the CSRF security token!
 				if (@include $_POST['main_inc_php_path']) {
 					$path = $_POST['main_inc_php_path'];
