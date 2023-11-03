@@ -32,13 +32,15 @@
 
 // 1. try to get the location of main.inc.php from PHYSICAL TEXT FILE
 
-	if (file_exists(dirname(dirname($_SERVER['SCRIPT_FILENAME']))."/main_module_inc_php")) {
+	$path = '';
+
+	if (!empty($_SERVER['SCRIPT_FILENAME']) && file_exists(dirname(dirname($_SERVER['SCRIPT_FILENAME']))."/main_module_inc_php")) {
 		$path = @file_get_contents(dirname(dirname($_SERVER['SCRIPT_FILENAME']))."/main_module_inc_php");
 		if (file_exists($path) && @include $path) {
 			return;
 		}
 	}
-	if (file_exists("../main_module_inc_php")) {
+	if ($path == '' && file_exists("../main_module_inc_php")) {
 		$path = @file_get_contents("../main_module_inc_php");
 		if (file_exists($path) && @include $path) {
 			return;
@@ -46,8 +48,6 @@
 	}
 
 // 2. Try into web root known defined into CONTEXT_DOCUMENT_ROOT (not always defined)
-
-	$path = '';
 
 	if (!empty($_SERVER["CONTEXT_DOCUMENT_ROOT"]) && file_exists($_SERVER["CONTEXT_DOCUMENT_ROOT"]."/main.inc.php")){
 		if (@include $_SERVER["CONTEXT_DOCUMENT_ROOT"]."/main.inc.php") {
