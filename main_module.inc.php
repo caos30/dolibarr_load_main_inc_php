@@ -32,6 +32,12 @@
 
 // 1. try to get the location of main.inc.php from PHYSICAL TEXT FILE
 
+	if (file_exists(dirname(dirname($_SERVER['SCRIPT_FILENAME']))."/main_module_inc_php")) {
+		$path = @file_get_contents(dirname(dirname($_SERVER['SCRIPT_FILENAME']))."/main_module_inc_php");
+		if (file_exists($path) && @include $path) {
+			return;
+		}
+	}
 	if (file_exists("../main_module_inc_php")) {
 		$path = @file_get_contents("../main_module_inc_php");
 		if (file_exists($path) && @include $path) {
@@ -113,8 +119,12 @@
 
 	if ($path != '') {
 		// if the load was not successful then we empty the path from this file
-		@file_put_contents("../main_module_inc_php", $path);
-		return;
+        if ($saved = @file_put_contents(dirname(dirname($_SERVER['SCRIPT_FILENAME']))."/main_module_inc_php", $path)) {
+            return;
+        } else {
+            @file_put_contents("../main_module_inc_php", $path);
+		    return;
+        }
 	}
 
 // we did not accomplished to load the main.inc.php
