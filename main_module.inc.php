@@ -34,8 +34,8 @@
 
 	$path = '';
 
-	if (file_exists(__DIR__."/main_module_inc_php")) {
-		$path = @file_get_contents(__DIR__."/main_module_inc_php");
+	if (file_exists(__DIR__."/../main_module_inc_php")) {
+		$path = @file_get_contents(__DIR__."/../main_module_inc_php");
 		if (file_exists($path) && @include $path) {
 			return;
 		}
@@ -112,7 +112,7 @@
 
 	if ($path != '') {
 		// if the load was not successful then we empty the path from this file
-        @file_put_contents(__DIR__."/main_module_inc_php", $path);
+        @file_put_contents(__DIR__."/../main_module_inc_php", $path);
 		return;
 	}
 
