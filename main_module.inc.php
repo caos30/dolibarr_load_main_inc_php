@@ -23,7 +23,7 @@
  *
  * 	2. at the top of any PHP file of your module needing to load main.inc.php put his:
  *
- * 		include_once('main_module.inc.php');
+ * 		include_once 'main_module.inc.php';
  *
  */
 
@@ -32,13 +32,12 @@
 
 // 1. try to get the location of main.inc.php from PHYSICAL TEXT FILE
 
-	if (file_exists("../main_module_inc_php")) {
-		$path = @file_get_contents("../main_module_inc_php");
+	if (file_exists(__DIR__."/../main_module_inc_php")) {
+		$path = @file_get_contents(__DIR__."/../main_module_inc_php");
 		if (file_exists($path) && @include $path) {
 			return;
 		}
 	}
-
 // 2. Try into web root known defined into CONTEXT_DOCUMENT_ROOT (not always defined)
 
 	$path = '';
@@ -91,16 +90,16 @@
 // 6. last try, with the PATH passed from the <FORM> in this script to let the user indicate the path
 
 	if ($path == '' && !empty($_POST['main_inc_php_path'])){
-				
+
 		// check that the proposed file is really main.inc.php and not other malicious file
 		if (substr($_POST['main_inc_php_path'], -13) == '/main.inc.php' && file_exists($_POST['main_inc_php_path'])) {
-					
+
 			// prevent a hacker from trying to upload a file submitted by him
 			// we check existence of usual Dolibarr directories of core modules (a few it's enough)
 			$dir = dirname($_POST['main_inc_php_path']); // ex: ../..
 			$sep = DIRECTORY_SEPARATOR;
 			if (is_dir($dir.$sep.'fourn') && is_dir($dir.$sep.'fourn'.$sep.'facture') && is_dir($dir.$sep.'fourn'.$sep.'facture'.$sep.'tpl')){
-			
+
 				define('NOCSRFCHECK',1); // this disable for this unique call the check of the CSRF security token!
 				if (@include $_POST['main_inc_php_path']) {
 					$path = $_POST['main_inc_php_path'];
@@ -113,7 +112,7 @@
 
 	if ($path != '') {
 		// if the load was not successful then we empty the path from this file
-		@file_put_contents("../main_module_inc_php", $path);
+        @file_put_contents(__DIR__."/../main_module_inc_php", $path);
 		return;
 	}
 
