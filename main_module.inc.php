@@ -30,17 +30,20 @@
 // ACTIVATE the ERROR reporting (use only to debug)
 //	ini_set('display_errors',1);ini_set('display_startup_errors',1);ini_set('error_reporting', E_ALL);
 
+	$path = '';
+	$error_msg = '';
+
 // 1. try to get the location of main.inc.php from PHYSICAL TEXT FILE
 
-	if (file_exists(__DIR__."/../main_module_inc_php")) {
-		$path = @file_get_contents(__DIR__."/../main_module_inc_php");
-		if (file_exists($path) && @include $path) {
+	$__DIR__parent = get_parent_absolute_path();
+	if (file_exists($__DIR__parent."/main_module_inc_php")) {
+		$cached_path = @file_get_contents($__DIR__parent."/main_module_inc_php");
+		if (file_exists($cached_path) && @include $cached_path) {
 			return;
 		}
 	}
-// 2. Try into web root known defined into CONTEXT_DOCUMENT_ROOT (not always defined)
 
-	$path = '';
+// 2. Try into web root known defined into CONTEXT_DOCUMENT_ROOT (not always defined)
 
 	if (!empty($_SERVER["CONTEXT_DOCUMENT_ROOT"]) && file_exists($_SERVER["CONTEXT_DOCUMENT_ROOT"]."/main.inc.php")){
 		if (@include $_SERVER["CONTEXT_DOCUMENT_ROOT"]."/main.inc.php") {
@@ -49,6 +52,7 @@
 	}
 
 // 3. try to find main.inc.php in all parent folders calculated from SCRIPT_FILENAME
+
 	if ($path == '' && !empty($_SERVER['SCRIPT_FILENAME'])) {
 		$dolipath = dirname($_SERVER['SCRIPT_FILENAME']);
 		while (!file_exists($dolipath."/main.inc.php")) {
@@ -64,6 +68,7 @@
 	}
 
 // 4. try to find main.inc.php in the parent directories
+
 	if ($path == '') {
 		$dolipath = "..";
 		while (!file_exists($dolipath."/main.inc.php")) {
@@ -109,11 +114,21 @@
 	}
 
 // if we accomplished to load main.inc.php file then save it and return
-
 	if ($path != '') {
+		
+		// check if the dir and file are writeables
+		$cache_file = $__DIR__parent.'/main_module_inc_php';
+		if (file_exists($cache_file) && !is_writable($cache_file)){
+			$error_msg = "ERROR: File { ".$cache_file." } must be writeable. Check permissions.<br />";
+		}else if (!file_exists($cache_file) && !is_writable($__DIR__parent)){
+			$error_msg = "ERROR: Directory { ".$__DIR__parent." } must be writeable. Check permissions.<br />";
+		}
+	
 		// if the load was not successful then we empty the path from this file
-        @file_put_contents(__DIR__."/../main_module_inc_php", $path);
-		return;
+		if ($error_msg==""){
+			file_put_contents($cache_file, $path);
+			return;
+		}
 	}
 
 // we did not accomplished to load the main.inc.php
@@ -133,7 +148,9 @@
 			<p><br />Please, specify absolute path of that file:</p>
 			<p><input type='text' name='main_inc_php_path' style='width:100%;font-size:1.2em;padding:0.5em 0.7em;' placeholder='/var/www/htdocs/main.inc.php'
 					  value='<?= !empty($_POST['main_inc_php_path']) ? $_POST['main_inc_php_path'] : '' ?>' /></p>
-		    <?php if (!empty($_POST['main_inc_php_path'])){ ?>
+		    <?php if ($error_msg!=""){ ?>
+				<p style='color:red;'><?= $error_msg ?></p>
+			<?php }else if (!empty($_POST['main_inc_php_path'])){ ?>
 				<p style='color:red;'>This path also failed to load the file <u>main.inc.php</u>.</p>
 			<?php } ?>
 			<p><br /><button type='submit' style='font-size:1.2em;padding:0.5em 1.5em;cursor:pointer;'>✅ &nbsp; Check this location</button></p>
@@ -143,4 +160,24 @@
 		</form>
 	</body>
 </html>
-<?php die();
+
+<?php 
+
+	die();
+
+    function get_parent_absolute_path() {
+        $dir_path = str_replace(array('/', '\\'), DIRECTORY_SEPARATOR, __DIR__);
+        $parts = array_filter(explode(DIRECTORY_SEPARATOR, $dir_path), 'strlen');
+        $absolutes = array();
+        foreach ($parts as $part) {
+            if ('.' == $part) continue;
+            if ('..' == $part) {
+                array_pop($absolutes);
+            } else {
+                $absolutes[] = $part;
+            }
+        }
+        array_pop($absolutes);
+        return DIRECTORY_SEPARATOR.implode(DIRECTORY_SEPARATOR, $absolutes);
+    }	
+
