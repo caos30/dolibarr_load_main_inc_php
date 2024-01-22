@@ -40,6 +40,10 @@ or, if the file is in a subdirectory, use this:
 include_once('../main_module.inc.php');
 ```
 
+# Compatibility with Windows
+
+It has been attempted to make it 100% compatible with Windows OS. As you should know, the main difference in this area is the use of the symbol "\" instead of "/" to separate directories in a path. The script uses the native PHP constant called DIRECTORY_SEPARATOR to separate directories in the paths. Even so, if you detect any inconsistency in your Windows installation, let us know.
+
 # Compatibility with Dolistore
 
 - In the first version i was not able to upload my modules to Dolistore using this script, but it was solved. It was neeed to change the name of the script: from `load_main.inc.php` to the current `main_module.inc.php`. Thanks to an Eldy suggestion of the Dolibarr core team.

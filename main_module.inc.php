@@ -30,14 +30,16 @@
 // ACTIVATE the ERROR reporting (use only to debug)
 //	ini_set('display_errors',1);ini_set('display_startup_errors',1);ini_set('error_reporting', E_ALL);
 
+	$version = '1.0';
 	$path = '';
 	$error_msg = '';
+	$sep = DIRECTORY_SEPARATOR;
 
 // 1. try to get the location of main.inc.php from PHYSICAL TEXT FILE
 
 	$__DIR__parent = get_parent_absolute_path();
-	if (file_exists($__DIR__parent."/main_module_inc_php")) {
-		$cached_path = @file_get_contents($__DIR__parent."/main_module_inc_php");
+	if (file_exists($__DIR__parent.$sep."main_module_inc_php")) {
+		$cached_path = @file_get_contents($__DIR__parent.$sep."main_module_inc_php");
 		if (file_exists($cached_path) && @include $cached_path) {
 			return;
 		}
@@ -45,9 +47,9 @@
 
 // 2. Try into web root known defined into CONTEXT_DOCUMENT_ROOT (not always defined)
 
-	if (!empty($_SERVER["CONTEXT_DOCUMENT_ROOT"]) && file_exists($_SERVER["CONTEXT_DOCUMENT_ROOT"]."/main.inc.php")){
-		if (@include $_SERVER["CONTEXT_DOCUMENT_ROOT"]."/main.inc.php") {
-			$path = $_SERVER["CONTEXT_DOCUMENT_ROOT"]."/main.inc.php";
+	if (!empty($_SERVER["CONTEXT_DOCUMENT_ROOT"]) && file_exists($_SERVER["CONTEXT_DOCUMENT_ROOT"].$sep."main.inc.php")){
+		if (@include $_SERVER["CONTEXT_DOCUMENT_ROOT"].$sep."main.inc.php") {
+			$path = $_SERVER["CONTEXT_DOCUMENT_ROOT"].$sep."main.inc.php";
 		}
 	}
 
@@ -55,15 +57,15 @@
 
 	if ($path == '' && !empty($_SERVER['SCRIPT_FILENAME'])) {
 		$dolipath = dirname($_SERVER['SCRIPT_FILENAME']);
-		while (!file_exists($dolipath."/main.inc.php")) {
+		while (!file_exists($dolipath.$sep."main.inc.php")) {
 			$abspath = $dolipath;
 			$dolipath = dirname($dolipath);
 			if ($abspath == $dolipath) { // cope with no main.inc.php all the way to filesystem root
 				break;
 			}
 		}
-		if (file_exists($dolipath."/main.inc.php") && @include $dolipath."/main.inc.php") {
-			$path = $dolipath."/main.inc.php";
+		if (file_exists($dolipath.$sep."main.inc.php") && @include $dolipath.$sep."main.inc.php") {
+			$path = $dolipath.$sep."main.inc.php";
 		}
 	}
 
@@ -71,15 +73,15 @@
 
 	if ($path == '') {
 		$dolipath = "..";
-		while (!file_exists($dolipath."/main.inc.php")) {
+		while (!file_exists($dolipath.$sep."main.inc.php")) {
 			$abspath = $dolipath;
 			$dolipath = "../".$dolipath;
 			if ($abspath == $dolipath) { // cope with no main.inc.php all the way to filesystem root
 				break;
 			}
 		}
-		if (file_exists($dolipath."/main.inc.php") && @include $dolipath."/main.inc.php") {
-			$path = $dolipath."/main.inc.php";
+		if (file_exists($dolipath.$sep."main.inc.php") && @include $dolipath.$sep."main.inc.php") {
+			$path = $dolipath.$sep."main.inc.php";
 		}
 	}
 
@@ -97,12 +99,11 @@
 	if ($path == '' && !empty($_POST['main_inc_php_path'])){
 
 		// check that the proposed file is really main.inc.php and not other malicious file
-		if (substr($_POST['main_inc_php_path'], -13) == '/main.inc.php' && file_exists($_POST['main_inc_php_path'])) {
+		if (substr($_POST['main_inc_php_path'], -12) == 'main.inc.php' && file_exists($_POST['main_inc_php_path'])) {
 
 			// prevent a hacker from trying to upload a file submitted by him
 			// we check existence of usual Dolibarr directories of core modules (a few it's enough)
 			$dir = dirname($_POST['main_inc_php_path']); // ex: ../..
-			$sep = DIRECTORY_SEPARATOR;
 			if (is_dir($dir.$sep.'fourn') && is_dir($dir.$sep.'fourn'.$sep.'facture') && is_dir($dir.$sep.'fourn'.$sep.'facture'.$sep.'tpl')){
 
 				define('NOCSRFCHECK',1); // this disable for this unique call the check of the CSRF security token!
@@ -117,7 +118,7 @@
 	if ($path != '') {
 		
 		// check if the dir and file are writeables
-		$cache_file = $__DIR__parent.'/main_module_inc_php';
+		$cache_file = $__DIR__parent.$sep.'main_module_inc_php';
 		if (file_exists($cache_file) && !is_writable($cache_file)){
 			$error_msg = "ERROR: File { ".$cache_file." } must be writeable. Check permissions.<br />";
 		}else if (!file_exists($cache_file) && !is_writable($__DIR__parent)){
