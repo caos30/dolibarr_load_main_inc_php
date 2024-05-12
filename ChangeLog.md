@@ -2,6 +2,12 @@
    dolibarr_load_main_inc_php
 ---------------------------------
 
+## v 2.0 [2024-05-12]
+- Fixed more issues with Windows paths.
+- Used in first place the file /documents/main_module_inc_php.txt to store the cached path (it's less problematic regarding writing permissions than /custom directory)
+- a SEARCH LOG has been included at the bottom of the web form detailing all the file paths used by the script, when there are troubles.
+- Fixed: full compatibility with the PHPCS ruleset of Dolibarr software project.
+
 ## v 1.0 [2024-01-22]
 - Fixed an issue with Windows paths. Now using around constant DIRECTORY_SEPARATOR in file paths.
 
