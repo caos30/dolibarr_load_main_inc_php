@@ -44,9 +44,9 @@ include_once('../main_module.inc.php');
 
 # Compatibility with Windows
 
-It has been attempted to make it 100% compatible with Windows OS. As you should know, the main difference in this area is the use of the symbol "\" instead of "/" to separate directories in a path. The script uses the native PHP constant called DIRECTORY_SEPARATOR to separate directories in the paths. Even so, if you detect any inconsistency in your Windows installation, let us know.
+It has been attempted to make it 100% compatible with Windows OS. As you should know, the main difference in this area is the use of the symbol "\\" instead of "/" to separate directories in a path. The script uses the native PHP constant called DIRECTORY_SEPARATOR to separate directories in the paths. Even so, if you detect any inconsistency in your Windows installation, let us know.
 
-In the 2.0 version has been fixed some "odd things" used by PHP in a Windwos environment. For example, when you retrieve $_SERVER['SCRIPT_FILENAME'] it returns a file path using the UNIX  directory separatorr (/) instead of the windows one (\) !!??
+In the 2.0 version has been fixed some "odd things" used by PHP in a Windwos environment. For example, when you retrieve $_SERVER['SCRIPT_FILENAME'] it returns a file path using the UNIX  directory separatorr (/) instead of the windows one (\\) !!??
 
 # Compatibility with Dolistore
 
