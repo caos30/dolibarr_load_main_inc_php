@@ -300,7 +300,7 @@ function get_parent_absolute_path()
 		}
 	}
 	array_pop($absolutes);
-	if (substr($parts[0], -1)==':') {
+	if (isset($parts[0]) && substr($parts[0], -1) == ':') {
 		// windows C:\xampp\htdocs\...
 		return implode(DIRECTORY_SEPARATOR, $absolutes);
 	} else {
